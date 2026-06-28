@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="BiteWise logo">
+  <rect width="512" height="512" rx="112" fill="#fa560b"/>
+  <circle cx="256" cy="256" r="170" fill="#fff4ed"/>
+  <path d="M166 156h44v200h-44z" fill="#fa560b"/>
+  <path d="M302 158c48 0 82 32 82 76 0 52-42 82-91 111l-37 22V156h46z" fill="#fa560b"/>
+  <path d="M210 156c0 58 34 96 84 96 51 0 84-38 84-96h-44c0 32-14 54-40 54s-40-22-40-54h-44z" fill="#101217"/>
+  <text x="256" y="420" text-anchor="middle" font-family="Arial, sans-serif" font-size="54" font-weight="800" fill="#101217">BW</text>
+</svg>

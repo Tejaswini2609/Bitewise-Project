@@ -1,0 +1,31 @@
+{
+  "name": "BiteWise AI Food Comparator",
+  "short_name": "BiteWise",
+  "description": "Compare food prices and get AI-style platform recommendations.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#fa560b",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Compare Pizza",
+      "short_name": "Pizza",
+      "url": "./?food=Pizza"
+    },
+    {
+      "name": "Compare Biryani",
+      "short_name": "Biryani",
+      "url": "./?food=Biryani"
+    }
+  ]
+}

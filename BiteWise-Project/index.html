@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="BiteWise compares food prices, offers, ratings and delivery times across Swiggy, Zomato and Magicpin with AI-style recommendations."
+    />
+    <meta name="theme-color" content="#fa560b" />
+    <title>BiteWise - Food Deal Comparator</title>
+    <link rel="manifest" href="app.webmanifest" />
+    <link rel="icon" href="assets/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="assets/icon.svg" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="BiteWise home">
+        <span class="brand-mark" aria-hidden="true">BW</span>
+        <span>Bite<span>Wise</span></span>
+      </a>
+
+      <nav class="nav" aria-label="Primary">
+        <a class="active" href="#">Home</a>
+        <a href="#explore">Explore</a>
+        <a href="#how">How It Works</a>
+        <a href="#about">About</a>
+      </nav>
+
+      <div class="top-actions">
+        <button class="theme-toggle" type="button" aria-label="Toggle dark mode">
+          <span aria-hidden="true">SUN</span>
+          <span aria-hidden="true">MOON</span>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-bg" aria-hidden="true"></div>
+        <div class="hero-content">
+          <h1 id="hero-title">One Search. Every Platform. <span>Best Deal.</span></h1>
+          <p>Compare prices, ratings, delivery times and offers across Swiggy, Zomato and Magicpin in one place.</p>
+
+          <form class="search-panel" id="search-form">
+            <label class="search-box" for="food-search">
+              <span aria-hidden="true">Search</span>
+              <input id="food-search" name="query" type="search" value="Pizza" list="food-options" autocomplete="off" />
+              <datalist id="food-options"></datalist>
+            </label>
+            <button type="submit">Search</button>
+          </form>
+
+          <div class="location-assist" id="location-assist">
+            <button id="location-button" type="button">Use my location</button>
+            <span id="location-status">Add nearby context for food searches and assistant answers.</span>
+          </div>
+
+          <div class="ai-controls" aria-label="AI preference controls">
+            <label for="budget-input">Budget</label>
+            <input id="budget-input" type="number" min="50" max="500" step="10" value="200" />
+            <button class="ai-button" id="ai-suggest-button" type="button">AI Suggest</button>
+          </div>
+        </div>
+      </section>
+
+      <div class="content-with-assistant">
+        <div class="main-content">
+          <section class="results-shell" id="explore" aria-live="polite">
+            <div class="results-head">
+              <div class="dish-meta">
+                <div class="dish-thumb" id="dish-thumb" aria-hidden="true">PZ</div>
+                <div>
+                  <h2 id="dish-title">Pizza</h2>
+                  <p id="dish-subtitle">Results for Pizza</p>
+                </div>
+              </div>
+              <span class="platform-count"><span></span>3 platforms found</span>
+            </div>
+
+            <div class="recommendation" id="recommendation"></div>
+            <div class="nearby-note" id="nearby-note"></div>
+
+            <div class="deal-grid">
+              <article class="best-card" id="best-card"></article>
+              <div class="platform-grid" id="platform-grid"></div>
+            </div>
+
+            <section class="ai-panel" aria-labelledby="ai-title">
+              <div>
+                <p class="eyebrow">AI assistant</p>
+                <h2 id="ai-title">Smart food insights</h2>
+              </div>
+              <div class="ai-grid">
+                <article class="ai-card">
+                  <span id="ai-score">92</span>
+                  <strong>Deal score</strong>
+                  <p id="ai-score-text">Calculated from price, offer, delivery speed and rating.</p>
+                </article>
+                <article class="ai-card">
+                  <strong>Why this platform?</strong>
+                  <p id="ai-reason">The model balances savings, delivery time and user rating for your selected food.</p>
+                </article>
+                <article class="ai-card">
+                  <strong>Similar foods</strong>
+                  <div class="suggestion-chips" id="similar-foods"></div>
+                </article>
+                <article class="ai-card">
+                  <strong>Budget match</strong>
+                  <p id="budget-match">Set a budget above and click AI Suggest.</p>
+                </article>
+              </div>
+            </section>
+          </section>
+
+          <section class="about-section" id="about" aria-labelledby="about-title">
+            <div class="about-copy">
+              <p class="eyebrow">About</p>
+              <h2 id="about-title">BiteWise helps you pick the smarter food delivery deal</h2>
+              <p>
+                BiteWise brings Swiggy, Zomato and Magicpin into one comparison view. It checks price,
+                discount, rating and delivery time, then recommends the platform that gives the best value
+                for the food you searched.
+              </p>
+              <div class="order-buttons" id="order-buttons"></div>
+            </div>
+            <div class="about-grid" aria-label="About BiteWise highlights">
+              <article>
+                <strong>One connected search</strong>
+                <p>Typing in search or asking the AI assistant updates the same comparison cards.</p>
+              </article>
+              <article>
+                <strong>Nearby-aware suggestions</strong>
+                <p>When location access is enabled, BiteWise recommends a first platform and backup places.</p>
+              </article>
+              <article>
+                <strong>Explainable AI score</strong>
+                <p>The recommendation is based on visible deal factors, not a hidden random choice.</p>
+              </article>
+            </div>
+          </section>
+
+          <section class="benefits" id="how" aria-label="Benefits">
+            <div>
+              <span aria-hidden="true">VS</span>
+              <strong>Compare easily</strong>
+              <p>Search once and view Swiggy, Zomato and Magicpin side by side.</p>
+            </div>
+            <div>
+              <span aria-hidden="true">Rs</span>
+              <strong>Save more</strong>
+              <p>See final prices, discounts and budget-friendly matches.</p>
+            </div>
+            <div>
+              <span aria-hidden="true">30m</span>
+              <strong>Deliver fast</strong>
+              <p>Prefer platforms that can deliver faster near your location.</p>
+            </div>
+            <div>
+              <span aria-hidden="true">4.5</span>
+              <strong>Trust always</strong>
+              <p>Balance platform ratings with AI-style deal scores.</p>
+            </div>
+          </section>
+
+          <section class="explore-guide" aria-labelledby="explore-guide-title">
+            <div>
+              <p class="eyebrow">Explore</p>
+              <h2 id="explore-guide-title">Search, ask, compare and order</h2>
+              <p>Use the search bar for direct food comparisons or ask the AI assistant naturally, such as "Find biryani under Rs. 250 near me". The comparison cards update with the assistant's matched food so both views stay connected.</p>
+            </div>
+            <div class="guide-grid">
+              <article>
+                <strong>Nearby first</strong>
+                <p>When location access is enabled, BiteWise labels recommendations as nearby-aware and keeps platform links ready for local availability checks.</p>
+              </article>
+              <article>
+                <strong>Fallback choices</strong>
+                <p>If an exact food is not in the catalog, the app suggests similar foods and still points you to the best available platform search.</p>
+              </article>
+              <article>
+                <strong>Assistant actions</strong>
+                <p>Quick prompts help users compare cheapest, fastest and budget picks without typing the full question each time.</p>
+              </article>
+            </div>
+          </section>
+        </div>
+
+        <aside class="assistant-shell" aria-labelledby="assistant-title">
+          <div class="assistant-header">
+            <div class="assistant-avatar" aria-hidden="true">AI</div>
+            <div>
+              <h2 id="assistant-title">BiteWise AI Assistant</h2>
+              <p>Food deals, budgets and platform picks</p>
+            </div>
+          </div>
+
+          <div class="assistant-chat" id="assistant-chat" aria-live="polite">
+            <div class="chat-message bot">
+              <div class="message-avatar" aria-hidden="true">BW</div>
+              <p>Ask me to compare platforms, find a budget pick, choose the fastest delivery, or search food near you.</p>
+            </div>
+          </div>
+
+          <div class="assistant-prompts" aria-label="Assistant quick prompts">
+            <button type="button" data-prompt="Find the best pizza deal near me">Best near me</button>
+            <button type="button" data-prompt="Show the cheapest biryani under Rs. 250">Cheapest</button>
+            <button type="button" data-prompt="Which platform is fastest for momos?">Fastest</button>
+          </div>
+
+          <form class="assistant-form" id="assistant-form">
+            <input
+              id="assistant-input"
+              name="prompt"
+              type="text"
+              placeholder="Ask about pizza under Rs. 300"
+              autocomplete="off"
+            />
+            <button id="assistant-send" type="submit">Send</button>
+          </form>
+        </aside>
+      </div>
+    </main>
+
+    <script type="module" src="app.js"></script>
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("./sw.js").catch(() => {});
+        });
+      }
+    </script>
+  </body>
+</html>
