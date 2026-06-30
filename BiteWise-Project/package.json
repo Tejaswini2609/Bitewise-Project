@@ -5,11 +5,11 @@
   "description": "AI-style food price comparison PWA for Swiggy, Zomato and Magicpin.",
   "type": "module",
   "scripts": {
-    "dev": "vite --host 127.0.0.1",
+    "dev": "vite --host 0.0.0.0",
     "backend": "node --disable-warning=ExperimentalWarning server/server.js",
     "start": "node --disable-warning=ExperimentalWarning server/server.js",
     "build": "vite build",
-    "preview": "vite preview --host 127.0.0.1"
+    "preview": "vite preview --host 0.0.0.0"
   },
   "keywords": [
     "food-delivery",

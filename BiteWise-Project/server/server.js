@@ -14,6 +14,7 @@ const rootDir = join(__dirname, "..");
 loadEnv(rootDir);
 
 const port = Number(process.env.PORT || 3001);
+const host = process.env.HOST || "0.0.0.0";
 
 const mimeTypes = {
   ".html": "text/html; charset=utf-8",
@@ -124,6 +125,6 @@ const server = createServer(async (request, response) => {
   }
 });
 
-server.listen(port, "127.0.0.1", () => {
-  console.log(`BiteWise backend running at http://127.0.0.1:${port}`);
+server.listen(port, host, () => {
+  console.log(`BiteWise backend running at http://${host}:${port}`);
 });

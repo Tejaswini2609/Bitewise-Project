@@ -1,49 +1,14 @@
-import { db } from "./database.js";
+import { foods, platforms } from "./seedData.js";
 
-const platformRows = db.prepare("SELECT * FROM platforms ORDER BY id");
-const foodRows = db.prepare("SELECT * FROM foods ORDER BY title");
-const foodByAlias = db.prepare(`
-  SELECT foods.*
-  FROM food_aliases
-  JOIN foods ON foods.id = food_aliases.food_id
-  WHERE food_aliases.alias = ?
-`);
-const dealsByFood = db.prepare(`
-  SELECT
-    deals.price,
-    deals.original,
-    deals.mins,
-    deals.offer,
-    deals.rating,
-    platforms.id,
-    platforms.name,
-    platforms.logo,
-    platforms.color,
-    platforms.url_pattern AS urlPattern
-  FROM deals
-  JOIN platforms ON platforms.id = deals.platform_id
-  WHERE deals.food_id = ?
-  ORDER BY platforms.name
-`);
-const similarFoodRows = db.prepare(`
-  SELECT food_key AS key, title, short, group_name AS groupName
-  FROM foods
-  WHERE group_name = ? AND id != ?
-  ORDER BY title
-  LIMIT 4
-`);
-const insertSearch = db.prepare(`
-  INSERT INTO search_history (query, matched_food, best_platform, best_price, budget)
-  VALUES (?, ?, ?, ?, ?)
-`);
+const platformMap = new Map(platforms.map((platform) => [platform.id, platform]));
 
-function toFood(row) {
+function toFood(food, index) {
   return {
-    id: row.id,
-    key: row.food_key,
-    title: row.title,
-    short: row.short,
-    groupName: row.group_name,
+    id: index + 1,
+    key: food.key,
+    title: food.title,
+    short: food.short,
+    groupName: food.groupName,
   };
 }
 
@@ -59,34 +24,43 @@ function buildUrl(pattern, foodTitle) {
 
 function getCatalogFood(query) {
   const normalized = query.trim().toLowerCase();
-  const row = foodByAlias.get(normalized);
 
-  if (row) {
-    return toFood(row);
-  }
+  const index = foods.findIndex((food) => {
+    const aliases = new Set([food.key, food.title.toLowerCase(), ...(food.aliases || [])]);
+    return aliases.has(normalized);
+  });
 
-  return null;
+  return index >= 0 ? toFood(foods[index], index) : null;
+}
+
+function getFoodSeed(food) {
+  return foods.find((item) => item.key === food.key);
 }
 
 function getDeals(food) {
-  return dealsByFood.all(food.id).map((deal) => ({
-    id: deal.id,
-    name: deal.name,
-    logo: deal.logo,
-    color: deal.color,
-    price: deal.price,
-    original: deal.original,
-    mins: deal.mins,
-    offer: deal.offer,
-    rating: deal.rating,
-    url: buildUrl(deal.urlPattern, food.title),
-  }));
+  const foodSeed = getFoodSeed(food);
+
+  return foodSeed.deals.map((deal) => {
+    const platform = platformMap.get(deal.platformId);
+
+    return {
+      id: platform.id,
+      name: platform.name,
+      logo: platform.logo,
+      color: platform.color,
+      price: deal.price,
+      original: deal.original,
+      mins: deal.mins,
+      offer: deal.offer,
+      rating: deal.rating,
+      url: buildUrl(platform.urlPattern, food.title),
+    };
+  });
 }
 
 function getGeneratedFood(query) {
   const title = query.trim() || "Pizza";
   const pizza = getCatalogFood("pizza");
-  const platformMap = new Map(platformRows.all().map((platform) => [platform.id, platform]));
 
   return {
     food: {
@@ -104,7 +78,7 @@ function getGeneratedFood(query) {
         ...deal,
         price: deal.price + 20 + index * 10,
         original: deal.original + 30,
-        url: buildUrl(platform.url_pattern, title),
+        url: buildUrl(platform.urlPattern, title),
       };
     }),
   };
@@ -142,22 +116,30 @@ function withScores(results) {
 }
 
 function findBudgetMatches(maxBudget) {
-  return foodRows
-    .all()
-    .map((row) => {
-      const food = toFood(row);
-      const results = getDeals(food);
+  return foods
+    .map((food, index) => {
+      const catalogFood = toFood(food, index);
+      const results = getDeals(catalogFood);
       const best = findBestDeal(results);
 
-      return { food, best };
+      return { food: catalogFood, best };
     })
     .filter(({ best }) => best.price <= maxBudget)
     .sort((a, b) => b.best.aiScore - a.best.aiScore || a.best.price - b.best.price)
     .slice(0, 3);
 }
 
+function findSimilarFoods(food) {
+  return foods
+    .map(toFood)
+    .filter((item) => item.groupName === food.groupName && item.key !== food.key)
+    .sort((a, b) => a.title.localeCompare(b.title))
+    .slice(0, 4)
+    .map(({ key, title, short, groupName }) => ({ key, title, short, groupName }));
+}
+
 export function listFoods() {
-  return foodRows.all().map(toFood);
+  return foods.map(toFood).sort((a, b) => a.title.localeCompare(b.title));
 }
 
 export function searchDeals(query = "Pizza", budget = 200) {
@@ -167,21 +149,7 @@ export function searchDeals(query = "Pizza", budget = 200) {
   const best = findBestDeal(base.results);
   const cheapest = [...scoredResults].sort((a, b) => a.price - b.price)[0];
   const fastest = [...scoredResults].sort((a, b) => a.mins - b.mins)[0];
-  const similarFoods = base.food.id
-    ? similarFoodRows.all(base.food.groupName, base.food.id).map((food) => ({
-        key: food.key,
-        title: food.title,
-        short: food.short,
-        groupName: food.groupName,
-      }))
-    : similarFoodRows.all("quick-bites", 0).map((food) => ({
-        key: food.key,
-        title: food.title,
-        short: food.short,
-        groupName: food.groupName,
-      }));
-
-  insertSearch.run(query, base.food.title, best.name, best.price, budget);
+  const similarFoods = base.food.id ? findSimilarFoods(base.food) : findSimilarFoods({ key: "", groupName: "quick-bites" });
 
   return {
     food: base.food,

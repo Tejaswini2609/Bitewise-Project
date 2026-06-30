@@ -24,7 +24,8 @@ const assistantInput = document.querySelector("#assistant-input");
 const assistantSend = document.querySelector("#assistant-send");
 const assistantChat = document.querySelector("#assistant-chat");
 const assistantPrompts = document.querySelector(".assistant-prompts");
-const apiBase = window.location.port === "3001" ? "" : "http://127.0.0.1:3001";
+const isViteDevServer = ["5173", "5174", "5175"].includes(window.location.port);
+const apiBase = isViteDevServer ? `${window.location.protocol}//${window.location.hostname}:3001` : "";
 
 let currentFood = null;
 let currentResults = [];
